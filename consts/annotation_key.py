@@ -1,0 +1,13 @@
+ANNOTATION_NAME = "service-meta-Name"
+ANNOTATION_DESCRIPTION = "service-meta-Description"
+ANNOTATION_DOCS_LINK = "service-meta-DocsLink"
+ANNOTATION_ENVIRONMENT = "service-meta-Environment"
+ANNOTATION_FRIENDLY_NAME = "service-meta-FriendlyName"
+ANNOTATION_ICON_URL = "service-meta-IconURL"
+ANNOTATION_MAJOR_VERSION = "service-meta-MajorVersion"
+ANNOTATION_MINOR_VERSION = "service-meta-MinorVersion"
+ANNOTATION_PATCH_VERSION = "service-meta-PatchVersion"
+ANNOTATION_PROJECTS = "service-meta-Projects"
+ANNOTATION_SERVICE_TYPE = "service-meta-ServiceType"
+ANNOTATION_SOURCE_LINK = "service-meta-SourceLink"
+
