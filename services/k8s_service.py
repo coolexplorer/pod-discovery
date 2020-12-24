@@ -1,11 +1,9 @@
-import logging
-
 from kubernetes import client, config
 
 from consts.annotation_key import *
 from models.biom2_service import Biom2Service
+from utils.logger import logger
 
-logger = logging.getLogger(__name__)
 BIOM2_ANNOTATION_PREFIX = "consul-registrator"
 
 
@@ -76,7 +74,7 @@ class K8SService:
                     url=url
                 ))
 
-        print(*biom2_services)
+        logger.debug(*biom2_services)
 
     def create_url(self, projects, service_type, name, major_version):
         if len(projects) == 0:
