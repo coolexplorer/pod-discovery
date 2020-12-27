@@ -1,8 +1,8 @@
 from kubernetes import client, config
 
-from consts.annotation_key import *
-from models.biom2_service import Biom2Service
-from utils.logger import logger
+from app.consts.annotation_key import *
+from app.schemas.biom2_service import Biom2Service
+from app.utils.logger import logger
 
 BIOM2_ANNOTATION_PREFIX = "consul-registrator"
 
@@ -23,9 +23,8 @@ class K8SService:
             config.load_kube_config(k8s_config.config_path)
         self.client = client
         self.biom2_pods = []
+        self.biom2_services = []
         self.discovery_config = discovery_config
-
-        self.search_biom2_pods()
 
     def search_biom2_pods(self, namespaces=None):
         if namespaces is None:
@@ -43,9 +42,7 @@ class K8SService:
             biom2_pods += list(filter(check_biom2_pod, res.items))
 
         self.biom2_pods = biom2_pods
-        self.extract_biom2_metadata()
-
-        return biom2_pods
+        self.biom2_services = self.extract_biom2_metadata()
 
     def extract_biom2_metadata(self):
         biom2_services = []
@@ -73,8 +70,9 @@ class K8SService:
                     environment=pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_ENVIRONMENT}'],
                     url=url
                 ))
-
-        logger.debug(*biom2_services)
+        service_names = list(map(lambda service: service.name, biom2_services))
+        logger.debug(f'{service_names}')
+        return biom2_services
 
     def create_url(self, projects, service_type, name, major_version):
         if len(projects) == 0:

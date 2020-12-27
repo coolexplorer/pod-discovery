@@ -1,4 +1,4 @@
-from services.k8s_service import K8SService
+from app.services.k8s_service import K8SService
 
 
 class ServiceAccounts:

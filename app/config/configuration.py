@@ -1,7 +1,7 @@
 import os
 
-from config.discovery_config import DiscoveryConfig
-from config.k8s_config import K8SConfig
+from app.config.discovery_config import DiscoveryConfig
+from app.config.k8s_config import K8SConfig
 
 
 class Configuration:
