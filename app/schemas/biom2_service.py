@@ -1,24 +1,44 @@
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel
 
 
-class Biom2ServiceBase(BaseModel):
-    id: str
+class ProjectBase(BaseModel):
     name: str
-    major_version: int
-    minor_version: int
-    patch_version: int
-    url: str
-    type: str
-    environment: str
-    projects: List[str]
-    friendly_name: str
-    description: str
-    icon_url: str
-    source_link: str
-    docs_link: str
+
+
+class Project(ProjectBase):
+    id: int
+    service_id: int
 
     class Config:
         orm_mode = True
+
+
+class Biom2ServiceBase(BaseModel):
+    name: str
+    major_version: Optional[int] = 0
+    minor_version: Optional[int] = 0
+    patch_version: Optional[int] = 1
+    url: Optional[str] = ''
+    type: Optional[str] = ''
+    environment: Optional[str] = ''
+    friendly_name: Optional[str] = ''
+    description: Optional[str] = ''
+    icon_url: Optional[str] = ''
+    source_link: Optional[str] = ''
+    docs_link: Optional[str] = ''
+
+
+class Biom2ServiceCreate(Biom2ServiceBase):
+    pass
+
+
+class Biom2Service(Biom2ServiceBase):
+    id: int
+    projects: List[Project] = []
+
+    class Config:
+        orm_mode = True
+
 

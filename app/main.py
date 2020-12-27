@@ -4,7 +4,9 @@ import uvicorn
 from fastapi import FastAPI, Depends
 from fastapi_versioning import VersionedFastAPI
 
+from app import models
 from app.config.configuration import Configuration
+from app.database.database import engine, SessionLocal, Base
 from app.routers import root
 from app.routers import endpoint
 
@@ -12,7 +14,9 @@ from app.routers import endpoint
 from app.schedules.schedule import Schedule
 from app.services.service_accounts import ServiceAccounts
 
-logger = logging.getLogger(__name__)
+
+Base.metadata.create_all(bind=engine)
+
 
 # FastAPI
 app = FastAPI(
@@ -27,17 +31,13 @@ service_accounts = ServiceAccounts(config)
 
 # Schedule
 schedule = Schedule(service_accounts.k8s)
-schedule.add_discovery_cron_job('*/10', 'search_biom2_pod')
+schedule.add_discovery_cron_job('*/20', 'search_biom2_pod')
 schedule.start()
 
 
 # routers
-def get_k8s_service_account():
-    return service_accounts.k8s
-
-
-app.include_router(root.router, tags=["root"])
-app.include_router(endpoint.router, tags=["endpoint"], dependencies=[Depends(get_k8s_service_account)])
+app.include_router(root.router)
+app.include_router(endpoint.router)
 
 # Versioned_FastAPI
 app = VersionedFastAPI(app,

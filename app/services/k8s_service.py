@@ -1,7 +1,7 @@
 from kubernetes import client, config
 
 from app.consts.annotation_key import *
-from app.schemas.biom2_service import Biom2Service
+from app.schemas.biom2_service import Biom2ServiceCreate
 from app.utils.logger import logger
 
 BIOM2_ANNOTATION_PREFIX = "consul-registrator"
@@ -47,15 +47,14 @@ class K8SService:
     def extract_biom2_metadata(self):
         biom2_services = []
         for pod in self.biom2_pods:
-            projects = pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_PROJECTS}'].split(",")
+            projects = pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_PROJECTS}']
             service_type = pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_SERVICE_TYPE}']
             name = pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_NAME}']
             major_version = pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_MAJOR_VERSION}']
             url = self.create_url(projects, service_type, name, major_version)
 
             biom2_services.append(
-                Biom2Service(
-                    id=name,
+                Biom2ServiceCreate(
                     name=name,
                     major_version=major_version,
                     minor_version=pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_MINOR_VERSION}'],

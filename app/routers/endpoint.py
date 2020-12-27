@@ -1,14 +1,15 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi_versioning import version
+from sqlalchemy.orm import Session
 
-from app.schemas.biom2_service import Biom2Service
-from app.utils.logger import logger
+from dependencies.database import get_db
+from repositories.biom2_service_repository import get_biom2_services
 
-router = APIRouter()
+router = APIRouter(tags=["endpoint"])
 
 
-@router.get("/endpoints", response_model=Biom2Service)
+@router.get("/endpoints")
 @version(1)
-async def read_service_endpoint():
-    logger.debug("/endpoints")
-    return {"items": []}
+async def read_service_endpoint(db: Session = Depends(get_db)):
+    services = get_biom2_services(db)
+    return {"items": [services]}
