@@ -12,7 +12,7 @@ def get_biom2_services_by_project(db: Session, project):
     return db.query(Biom2Service).filter(Biom2Service.projects.any(name=project)).all()
 
 
-def create_service(db: Session, biom2_service, projects):
+def create_biom2_service(db: Session, biom2_service, projects):
     db_biom2_service = Biom2Service(
         name=biom2_service.name,
         major_version=biom2_service.major_version,
@@ -31,13 +31,27 @@ def create_service(db: Session, biom2_service, projects):
     # make relationship with project
     if len(projects) != 0:
         for project in projects:
-            pro = db.query(Project).filter(Project.name == project).first()
+            pro = get_project(db, project)
             if pro is None:
-                db_biom2_service.projects.append(Project(name=project))
-            else:
-                db_biom2_service.projects.append(pro)
+                insert_project(db, project)
 
-    db.add(db_biom2_service)
+            pro = get_project(db, project)
+            db_biom2_service.projects.append(pro)
+
+    return db_biom2_service
+
+
+def insert_project(db: Session, project):
+    db.add(Project(name=project))
+    db.commit()
+
+
+def get_project(db: Session, project):
+    return db.query(Project).filter(Project.name == project).first()
+
+
+def insert_services(db: Session, biom2_services):
+    db.add_all(biom2_services)
     db.commit()
 
 
@@ -50,7 +64,7 @@ def delete_service_all_rows(db: Session):
             for project in service.projects:
                 db.delete(project)
             db.delete(service)
-            db.commit()
+        db.commit()
     except Exception:
         logger.debug("Deletion failed")
         db.rollback()

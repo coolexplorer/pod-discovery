@@ -50,6 +50,7 @@ class K8SService:
         delete_service_all_rows(db)
 
         biom2_services = []
+        db_biom2_services = []
         for pod in self.biom2_pods:
             projects = pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_PROJECTS}']
             environment = pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_ENVIRONMENT}']
@@ -77,8 +78,8 @@ class K8SService:
                 url=url
             )
             biom2_services.append(biom2_service)
-            create_service(db, biom2_service, projects)
-
+            db_biom2_services.append(create_biom2_service(db, biom2_service, projects))
+        insert_services(db, db_biom2_services)
         service_names = list(map(lambda service: (service.name, service.environment), biom2_services))
         logger.debug(f'Discovered services - {service_names}')
         return biom2_services
