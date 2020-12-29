@@ -1,5 +1,7 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 
+from utils.logger import logger
+
 
 class Schedule:
     def __init__(self, k8s_service):

@@ -7,9 +7,12 @@ class ProjectBase(BaseModel):
     name: str
 
 
+class ProjectCreate(ProjectBase):
+    pass
+
+
 class Project(ProjectBase):
     id: int
-    service_id: int
 
     class Config:
         orm_mode = True

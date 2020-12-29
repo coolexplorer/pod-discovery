@@ -2,9 +2,11 @@ from kubernetes import client, config
 
 from app.consts.annotation_key import *
 from app.schemas.biom2_service import Biom2ServiceCreate
-from app.utils.logger import logger
+from database.database import SessionLocal
+from repositories.biom2_service_repository import *
 
 BIOM2_ANNOTATION_PREFIX = "consul-registrator"
+db = SessionLocal()
 
 
 def check_biom2_pod(pod):
@@ -45,32 +47,40 @@ class K8SService:
         self.biom2_services = self.extract_biom2_metadata()
 
     def extract_biom2_metadata(self):
+        delete_service_all_rows(db)
+
         biom2_services = []
         for pod in self.biom2_pods:
             projects = pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_PROJECTS}']
+            environment = pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_ENVIRONMENT}']
+            if projects == '' or environment == '':
+                continue
+
+            projects = projects.split(',')
             service_type = pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_SERVICE_TYPE}']
             name = pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_NAME}']
             major_version = pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_MAJOR_VERSION}']
             url = self.create_url(projects, service_type, name, major_version)
 
-            biom2_services.append(
-                Biom2ServiceCreate(
-                    name=name,
-                    major_version=major_version,
-                    minor_version=pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_MINOR_VERSION}'],
-                    patch_version=pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_PATCH_VERSION}'],
-                    projects=projects,
-                    type=service_type,
-                    source_link=pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_SOURCE_LINK}'],
-                    description=pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_DESCRIPTION}'],
-                    docs_link=pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_DOCS_LINK}'],
-                    friendly_name=pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_FRIENDLY_NAME}'],
-                    icon_url=pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_ICON_URL}'],
-                    environment=pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_ENVIRONMENT}'],
-                    url=url
-                ))
-        service_names = list(map(lambda service: service.name, biom2_services))
-        logger.debug(f'{service_names}')
+            biom2_service = Biom2ServiceCreate(
+                name=name,
+                major_version=major_version,
+                minor_version=pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_MINOR_VERSION}'],
+                patch_version=pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_PATCH_VERSION}'],
+                type=service_type,
+                source_link=pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_SOURCE_LINK}'],
+                description=pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_DESCRIPTION}'],
+                docs_link=pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_DOCS_LINK}'],
+                friendly_name=pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_FRIENDLY_NAME}'],
+                icon_url=pod.metadata.annotations[f'{BIOM2_ANNOTATION_PREFIX}/{ANNOTATION_ICON_URL}'],
+                environment=environment,
+                url=url
+            )
+            biom2_services.append(biom2_service)
+            create_service(db, biom2_service, projects)
+
+        service_names = list(map(lambda service: (service.name, service.environment), biom2_services))
+        logger.debug(f'Discovered services - {service_names}')
         return biom2_services
 
     def create_url(self, projects, service_type, name, major_version):

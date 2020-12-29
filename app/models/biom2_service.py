@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Table
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 
 from app.database.database import Base
 
@@ -12,8 +12,8 @@ services_projects = Table('services_projects', Base.metadata,
 class Biom2Service(Base):
     __tablename__ = "biom2services"
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False, unique=True, index=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String, nullable=False)
     major_version = Column(Integer)
     minor_version = Column(Integer)
     patch_version = Column(Integer)
@@ -31,5 +31,8 @@ class Biom2Service(Base):
 class Project(Base):
     __tablename__ = "projects"
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False, unique=True, index=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String, nullable=False)
+
+    def __repr__(self):
+        return "<Project('%s')>" % self.name
