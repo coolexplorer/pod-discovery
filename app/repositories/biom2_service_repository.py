@@ -50,6 +50,10 @@ def get_project(db: Session, project):
     return db.query(Project).filter(Project.name == project).first()
 
 
+def get_projects(db: Session):
+    return db.query(Project).all()
+
+
 def insert_services(db: Session, biom2_services):
     db.add_all(biom2_services)
     db.commit()
