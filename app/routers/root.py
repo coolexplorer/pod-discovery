@@ -3,12 +3,11 @@ import logging
 from fastapi import APIRouter
 from fastapi_versioning import version
 
-
 logger = logging.getLogger(__name__)
-router = APIRouter()
+router = APIRouter(tags=["root"])
 
 
-@router.get("/endpoints")
+@router.get("/ping")
 @version(1)
-async def read_service_endpoint():
-    return {"items": []}
+async def pong():
+    return {"result": "pong"}
