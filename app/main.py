@@ -1,19 +1,14 @@
-import logging
-
 import uvicorn
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from fastapi_versioning import VersionedFastAPI
 
-from app import models
-from app.config.configuration import Configuration
-from app.database.database import engine, SessionLocal, Base
-from app.routers import root
-from app.routers import endpoint
-
+from config.configuration import Configuration
+from database.database import engine, Base
+from routers import endpoint, project
+from routers import root
 # log
-from app.schedules.schedule import Schedule
-from app.services.service_accounts import ServiceAccounts
-from routers import project
+from schedules.schedule import Schedule
+from services.service_accounts import ServiceAccounts
 
 Base.metadata.create_all(bind=engine)
 
