@@ -1,7 +1,7 @@
 from kubernetes import client, config
 
-from app.consts.annotation_key import *
-from app.schemas.biom2_service import Biom2ServiceCreate
+from consts.annotation_key import *
+from schemas.biom2_service import Biom2ServiceCreate
 from database.database import SessionLocal
 from repositories.biom2_service_repository import *
 

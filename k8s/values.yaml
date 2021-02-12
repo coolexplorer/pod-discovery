@@ -8,7 +8,7 @@ image:
   repository: coolexplorer/biom2-discovery
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  tag: "main-6b5ec02"
 
 imagePullSecrets: []
 nameOverride: ""
