@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Table
 from sqlalchemy.orm import relationship, backref
 
-from app.database.database import Base
+from database.database import Base
 
 services_projects = Table('services_projects', Base.metadata,
                           Column('service_id', Integer, ForeignKey('biom2services.id')),
