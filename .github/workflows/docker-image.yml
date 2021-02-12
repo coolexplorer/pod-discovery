@@ -1,0 +1,24 @@
+name: docker
+
+on:
+  release:
+    types: [published]
+  watch:
+    types: [started]
+
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: docker build & push
+      uses: mr-smithers-excellent/docker-build-push@v2
+      with:
+        image: coolexplorer/biom2-discovery
+        registry: docker.io
+        dockerfile: biom2-discovery/Dockerfile
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
