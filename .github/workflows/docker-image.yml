@@ -19,6 +19,6 @@ jobs:
       with:
         image: coolexplorer/biom2-discovery
         registry: docker.io
-        dockerfile: Dockerfile
+        dockerfile: biom2-discovery/Dockerfile
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
