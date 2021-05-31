@@ -10,24 +10,28 @@ from routers import root
 from schedules.schedule import Schedule
 from services.service_accounts import ServiceAccounts
 
-Base.metadata.create_all(bind=engine)
+# Configuration
+config = Configuration()
+config.read_env()
 
+# Database
+if config.discovery.config_use_db:
+    Base.metadata.create_all(bind=engine)
 
 # FastAPI
 app = FastAPI(
-    title="biom2-discovery",
-    description="BioMetrics2 App and Service discovery service under the kubernetes"
+    title="pod-discovery",
+    description="App and Service discovery service under the kubernetes"
 )
 
 # Service Account
-config = Configuration()
-config.read_env()
 service_accounts = ServiceAccounts(config)
 
 # Schedule
-schedule = Schedule(service_accounts.k8s)
-schedule.add_discovery_cron_job('*/20', 'search_biom2_pod')
-schedule.start()
+if config.discovery.config_use_db:
+    schedule = Schedule(service_accounts.k8s)
+    schedule.add_discovery_cron_job('*/20', 'search_pod')
+    schedule.start()
 
 # routers
 app.include_router(root.router)
