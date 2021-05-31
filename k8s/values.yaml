@@ -8,11 +8,15 @@ image:
   repository: coolexplorer/biom2-discovery
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "main-950d8f4"
+  tag: "main"
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+
+env:
+  - name: K8S_CONFIG_TYPE
+    value: "IN_CLUSTER"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -46,7 +50,7 @@ ingress:
     kubernetes.io/ingress.class: istio
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: "biom2-discovery.eakr.io"
+    - host: "discovery.coolexplorer.cf"
       paths: ["/", "/status/*"]
   tls: []
   #  - secretName: chart-example-tls
