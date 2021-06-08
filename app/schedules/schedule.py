@@ -12,4 +12,4 @@ class Schedule:
         self.schedule.start()
 
     def add_discovery_cron_job(self, cron_expression, schedule_id):
-        self.schedule.add_job(self.k8s_service.search_biom2_pods, 'cron', second=cron_expression, id=schedule_id)
+        self.schedule.add_job(self.k8s_service.search_pods, 'cron', second=cron_expression, id=schedule_id)

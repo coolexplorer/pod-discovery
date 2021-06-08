@@ -3,7 +3,7 @@ from fastapi_versioning import version
 from sqlalchemy.orm import Session
 
 from dependencies.database import get_db
-from repositories.biom2_service_repository import get_projects
+from repositories.pod_service_repository import get_projects
 
 router = APIRouter(tags=["project"])
 

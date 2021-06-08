@@ -5,7 +5,7 @@ from fastapi_versioning import version
 from sqlalchemy.orm import Session
 
 from dependencies.database import get_db
-from repositories.biom2_service_repository import *
+from repositories.pod_service_repository import *
 
 router = APIRouter(tags=["endpoint"])
 
@@ -16,9 +16,9 @@ async def read_service_endpoint(type: Optional[str] = None, environment: Optiona
                                 project: Optional[str] = None, db: Session = Depends(get_db)):
 
     if project is not None:
-        services = get_biom2_services_by_project(db, project)
+        services = get_pod_services_by_project(db, project)
     else:
-        services = get_biom2_services(db)
+        services = get_pod_services(db)
 
     if type is not None:
         services = list(filter(lambda service: service.type == type, services))

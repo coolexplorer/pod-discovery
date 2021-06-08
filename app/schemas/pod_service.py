@@ -18,7 +18,7 @@ class Project(ProjectBase):
         orm_mode = True
 
 
-class Biom2ServiceBase(BaseModel):
+class PodServiceBase(BaseModel):
     name: str
     major_version: Optional[int] = 0
     minor_version: Optional[int] = 0
@@ -33,11 +33,11 @@ class Biom2ServiceBase(BaseModel):
     docs_link: Optional[str] = ''
 
 
-class Biom2ServiceCreate(Biom2ServiceBase):
+class PodServiceCreate(PodServiceBase):
     pass
 
 
-class Biom2Service(Biom2ServiceBase):
+class PodService(PodServiceBase):
     id: int
     projects: List[Project] = []
 

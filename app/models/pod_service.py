@@ -1,16 +1,16 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Table
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship
 
 from database.database import Base
 
 services_projects = Table('services_projects', Base.metadata,
-                          Column('service_id', Integer, ForeignKey('biom2services.id')),
+                          Column('service_id', Integer, ForeignKey('pod_services.id')),
                           Column('project_id', Integer, ForeignKey('projects.id'))
                           )
 
 
-class Biom2Service(Base):
-    __tablename__ = "biom2services"
+class PodService(Base):
+    __tablename__ = "pod_services"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
@@ -25,7 +25,7 @@ class Biom2Service(Base):
     icon_url = Column(String)
     source_link = Column(String)
     docs_link = Column(String)
-    projects = relationship("Project", secondary=services_projects, backref="biom2services", lazy="dynamic")
+    projects = relationship("Project", secondary=services_projects, backref="services", lazy="dynamic")
 
 
 class Project(Base):
