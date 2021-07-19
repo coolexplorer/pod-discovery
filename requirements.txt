@@ -1,5 +1,5 @@
-fastapi~=0.65.1
-uvicorn~=0.13.4
+fastapi~=0.65.0
+uvicorn~=0.14.0
 pydantic~=1.8.2
 kubernetes~=17.17.0
 fastapi-versioning~=0.9.1
