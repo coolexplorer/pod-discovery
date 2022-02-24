@@ -3,5 +3,5 @@ uvicorn==0.14.0
 pydantic==1.8.2
 kubernetes==17.17.0
 fastapi-versioning==0.10.0
-APScheduler==3.8.1
+APScheduler==3.9.0.post1
 sqlalchemy==1.4.31
