@@ -1,4 +1,4 @@
-fastapi==0.65.3
+fastapi==0.74.1
 uvicorn==0.14.0
 pydantic==1.8.2
 kubernetes==17.17.0
